@@ -13,8 +13,9 @@ except Exception:
         print("Unable to connect to the MongoDB server.")
 
 
-db = client["digilib"]
+db = client["waterdip"]
 User = db.users
+Tasks = db.tasks
 
 
 User.create_index([("email", pymongo.ASCENDING)], unique=True)

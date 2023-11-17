@@ -1,8 +1,5 @@
 from fastapi import FastAPI, APIRouter, HTTPException, Request, Response, status
-# from app.auth.endpoint import auth_router
-# from app.books.endpoint import book_router
-from app.db import Authors, BookItems, BookQueue, BookRequests, BookTransactions, Books, Notifications, Projects
-
+from app.v1.tasks.endpoint import task_router
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Recipe API", openapi_url="/openapi.json")
@@ -60,11 +57,7 @@ app.add_middleware(
 )
 
 
-# api_router.include_router(auth_router, prefix="/auth")
-# api_router.include_router(book_router, prefix="/books")
-# api_router.include_router(user_router, prefix="/users")
-# api_router.include_router(library_router, prefix="/library")
-# api_router.include_router(notification_router, prefix="/notifications")
+api_router.include_router(task_router, prefix="/tasks", tags=["tasks"])
 
 app.include_router(api_router)
 

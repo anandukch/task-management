@@ -1,11 +1,11 @@
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     MONGO_URL: str
-    MONGO_INITDB_DATABASE=str
 
     class Config:
         env_file = "./.env"
+        case_sensitive = True
 
 
 settings = Settings()
