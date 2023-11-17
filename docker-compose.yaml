@@ -5,8 +5,8 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    container_name: digilib-server
-    image: digilib-server
+    container_name: waterdip-server
+    image: waterdip-server
     ports:
       - "8000:8000"
     volumes:

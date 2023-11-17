@@ -12,7 +12,7 @@ async def get_all_tasks():
     return Response(status_code=status.HTTP_200_OK, content=tasks)
 
 
-# @task_router.post("/",status_code=201,response_model=TaskInDB)
-# async def add_tasks(tasks:TaskCreate):
-#     task = await task_crud.create(tasks)
-#     return Response(status_code=status.HTTP_201_CREATED,content="created")
+@task_router.post("/", status_code=201)
+async def create_task(task: TaskCreate):
+    await task_crud.create(task)
+    return Response(status_code=status.HTTP_201_CREATED, content="task created")
