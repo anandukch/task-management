@@ -17,11 +17,6 @@ class TaskBase(BaseModel):
 
 class TaskCreate(BaseModel):
     title: str = Field(..., min_length=1, max_length=50)
-    class Config:
-        from_attributes = True
-        # allow_population_by_field_name = True
-        # arbitrary_types_allowed = True
-        # json_encoders = {ObjectId: str}
 
 class TaskUpdate(TaskBase):
     pass

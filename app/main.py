@@ -57,7 +57,7 @@ app.add_middleware(
 )
 
 
-api_router.include_router(task_router, prefix="/tasks", tags=["tasks"])
+api_router.include_router(task_router, prefix="/v1/tasks", tags=["tasks"])
 
 app.include_router(api_router)
 
