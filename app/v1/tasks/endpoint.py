@@ -1,9 +1,8 @@
-from fastapi import APIRouter, HTTPException, status, Response
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, HTTPException, Response
 from app.v1.tasks.crud import task_crud
-from app.v1.tasks.schema import TaskCreate, TaskUpdate, TaskInDB
+from app.v1.tasks.schema import TaskCreate, TaskUpdate, TaskListCreate,TaskDelete
 from app.v1.tasks.serializer import taskResponseSerializer, tasksResponseSerializer
-from bson import ObjectId
+from typing import List, Union
 
 task_router = APIRouter()
 
@@ -15,14 +14,33 @@ async def get_all_tasks():
 
 
 @task_router.post("/", status_code=201)
-async def create_task(task: TaskCreate):
-    new_task = {
-        "id": task_crud.get_length()+1,
-        "title": task.title,
-        "is_completed": False,
-    }
-    task_crud.create(new_task)
-    return {"id": task_crud.get_length()}
+async def create_task(task: Union[TaskCreate, TaskListCreate]):
+    try:
+        if "tasks" in dict(task) and isinstance(task.tasks, list):
+            created_ids = []
+            index = task_crud.get_length()
+            new_tasks = []
+            for t in task.tasks:
+                new_task = {
+                    "id": index + 1,
+                    "title": t.title,
+                    "is_completed": t.is_completed,
+                }
+                new_tasks.append(new_task)
+                created_ids.append(index + 1)
+                index += 1
+            task_crud.create_all(new_tasks)
+            return {"tasks": [{"id": id} for id in created_ids]}
+        else:
+            new_task = {
+                "id": task_crud.get_length() + 1,
+                "title": task.title,
+                "is_completed": task.is_completed,
+            }
+            task_crud.create(new_task)
+            return {"id": task_crud.get_length()}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @task_router.get("/{id}", status_code=200)
@@ -50,3 +68,11 @@ async def delete_task(id: int):
         return Response(status_code=204)
     else:
         raise HTTPException(status_code=404, detail="There is no task at that id")
+
+@task_router.delete("/", status_code=204)
+async def delete_tasks(req: TaskDelete):
+    tasks = req.tasks
+    for task in tasks:
+        task_crud.delete(task['id'])
+    
+    return Response(status_code=204)

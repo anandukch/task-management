@@ -23,3 +23,4 @@ class BaseCrud:
 
     def delete(self, id: str):
         return self.db.delete_one({"id": (id)})
+

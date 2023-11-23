@@ -1,5 +1,7 @@
 from pydantic import BaseModel, Field
 from bson import ObjectId
+from typing import List, Dict
+
 
 class TaskBase(BaseModel):
     title: str = Field(..., min_length=1, max_length=50)
@@ -17,6 +19,12 @@ class TaskBase(BaseModel):
 
 class TaskCreate(BaseModel):
     title: str = Field(..., min_length=1, max_length=50)
+    is_completed: bool = Field(False)
+
+
+class TaskListCreate(BaseModel):
+    tasks: list[TaskCreate]
+
 
 class TaskUpdate(TaskBase):
     pass
@@ -33,3 +41,15 @@ class TaskInDB(TaskBase):
                 "is_completed": False,
             }
         }
+
+
+class TaskDelete(BaseModel):
+        tasks: List[Dict[str, int]]
+
+    # class Config:
+    #     populate_by_name = True
+    #     json_schema_extra = {
+    #         "example": {
+    #             "id": "1",
+    #         }
+    #     }
