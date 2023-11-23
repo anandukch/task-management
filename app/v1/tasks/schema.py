@@ -31,25 +31,26 @@ class TaskUpdate(TaskBase):
 
 
 class TaskInDB(TaskBase):
-    id: str = Field(..., alias="_id")
+    id: str = Field(..., alias="id")
 
     class Config:
         populate_by_name = True
         json_schema_extra = {
             "example": {
+                "id": "1",
                 "title": "Task 1",
                 "is_completed": False,
             }
         }
 
 
-class TaskDelete(BaseModel):
-        tasks: List[Dict[str, int]]
+class CreateTaskResponse(BaseModel):
+    id: str = Field(..., alias="id")
 
-    # class Config:
-    #     populate_by_name = True
-    #     json_schema_extra = {
-    #         "example": {
-    #             "id": "1",
-    #         }
-    #     }
+
+class TaskDelete(BaseModel):
+    tasks: List[CreateTaskResponse]
+
+
+class GetTasksResponse(BaseModel):
+    task: List[TaskInDB]

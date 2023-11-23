@@ -1,10 +1,20 @@
-from fastapi import FastAPI, APIRouter, HTTPException, status
+from fastapi import FastAPI, APIRouter, HTTPException, status, Request
+from fastapi.responses import JSONResponse
 from app.v1.tasks.endpoint import task_router
 from fastapi.middleware.cors import CORSMiddleware
+from app.exceptions import TaskException
 
 app = FastAPI(title="Recipe API", openapi_url="/openapi.json")
 
 api_router = APIRouter()
+
+
+@app.exception_handler(TaskException)
+async def unicorn_exception_handler(request: Request, exc: TaskException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"error": exc.message},
+    )
 
 
 @app.on_event("startup")
